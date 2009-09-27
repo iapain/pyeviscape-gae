@@ -1,0 +1,13 @@
+pyeviscape - Python Wrapper to Eviscape API
+pyeviscape-gae enables it to run on Google App Engine (gae)
+
+Examples:
+from pyeviscape.eviscape import Members, Nodes, Evis
+
+for member in Members.search('deepak'):
+    print member
+	
+print Nodes(id=17).get()
+
+for evis in Evis.latest()[:5]:
+    print evis
