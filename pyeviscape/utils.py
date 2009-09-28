@@ -11,7 +11,7 @@ Copyright (c) 2009 MMIX Musicpictures Ltd, Berlin
 import oauth
 import urlparse
 import re
-from datetime import datetime
+from datetime import datetime, tzinfo, timedelta
 from config import API_KEY, API_SECRET, FORMATTER
 from xml.dom import minidom
 from urllib import urlencode
@@ -247,6 +247,8 @@ def smart_str(s, encoding='utf-8', strings_only=False, errors='strict'):
         return s
 
 
+class TZ(tzinfo):
+    def utcoffset(self, dt): return timedelta(hours=2)
 
  
 def parseDateTime(s):
@@ -281,14 +283,6 @@ def parseDateTime(s):
     # from UTC (as it appeared in the input string).  We
     # handle UTC specially since it is a very common case
     # and we know its name.
-    if tzname is None:
-        tz = None
-    else:
-        tzhour, tzmin = int(tzhour), int(tzmin)
-        if tzhour == tzmin == 0:
-            tzname = 'UTC'
-        tz = FixedOffset(timedelta(hours=tzhour,
-                                   minutes=tzmin), tzname)
     
     # Convert the date/time field into a python datetime
     # object.
@@ -303,4 +297,4 @@ def parseDateTime(s):
     
     # Return updated datetime object with microseconds and
     # timezone information.
-    return x.replace(microsecond=int(fractional), tzinfo=tz)
+    return x.replace(microsecond=int(fractional), tzinfo=TZ())
